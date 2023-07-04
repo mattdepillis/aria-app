@@ -10,8 +10,6 @@ def conditional(x, y):
     return x > y
 
 
-
-
 if __name__ == "__main__":
     print(SPOTIFY_API_CLIENT_ID)
 
