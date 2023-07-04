@@ -1,7 +1,3 @@
-"""
-This script should be used in the event that the application requires a new refresh token to be generated.
-"""
-
 # imports
 import base64
 from dotenv import load_dotenv
@@ -14,10 +10,38 @@ load_dotenv()
 # client id and secret
 SPOTIFY_API_CLIENT_ID = os.getenv('SPOTIFY_API_CLIENT_ID')
 SPOTIFY_API_CLIENT_SECRET = os.getenv('SPOTIFY_API_CLIENT_SECRET')
-# api url
+# refresh token
+SPOTIFY_REFRESH_TOKEN = os.getenv('SPOTIFY_REFRESH_TOKEN')
+# urls
 SPOTIFY_API_AUTH_URL = os.getenv('SPOTIFY_API_AUTH_URL')
+SPOTIFY_API_TOKEN_URL= os.getenv('SPOTIFY_API_TOKEN_URL')
 # redirect uri
 SPOTIFY_API_REDIRECT_URI = os.getenv('SPOTIFY_API_REDIRECT_URI')
+
+
+def get_access_token():
+    # Construct the request URL with query parameters
+    url = f"{SPOTIFY_API_TOKEN_URL}?grant_type=refresh_token&refresh_token={SPOTIFY_REFRESH_TOKEN}"
+
+    # Encode the client ID and client secret in base64
+    client_credentials = f"{SPOTIFY_API_CLIENT_ID}:{SPOTIFY_API_CLIENT_SECRET}"
+    base64_credentials = base64.b64encode(client_credentials.encode()).decode()
+
+    # Send a POST request to the token endpoint
+    response = requests.post(url, headers={
+        "Authorization": f"Basic {base64_credentials}",
+        "Content-Type": "application/x-www-form-urlencoded"
+    })
+
+    # Parse the JSON response and extract the access token
+    data = response.json()
+    access_token = data.get("access_token")
+
+    return access_token
+
+"""
+This script should be used in the event that the application requires a new refresh token to be generated.
+"""
 
 def get_refresh_token_access_code_url():
     params = {
@@ -59,16 +83,3 @@ def get_refresh_token(auth_code):
     refresh_token = data.get('refresh_token')
 
     return refresh_token
-
-
-if __name__ == "__main__":
-    url = get_refresh_token_access_code_url()
-    print(url)
-    """
-    Visit URL and approve. Then, set AUTH_CODE to the code in the resulting url from the page redirect after approval.
-    """
-    AUTH_CODE = '<CODE>'
-
-    # * once AUTH_CODE is obtained, uncomment and run the following
-    # token = get_refresh_token(AUTH_CODE)
-    # print(token)
