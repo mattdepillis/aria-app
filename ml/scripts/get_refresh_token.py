@@ -1,5 +1,5 @@
 """
-
+This script should be used in the event that the application requires a new refresh token to be generated.
 """
 
 # imports
@@ -69,5 +69,6 @@ if __name__ == "__main__":
     """
     AUTH_CODE = '<CODE>'
 
-    token = get_refresh_token(AUTH_CODE)
-    print(token)
+    # * once AUTH_CODE is obtained, uncomment and run the following
+    # token = get_refresh_token(AUTH_CODE)
+    # print(token)
